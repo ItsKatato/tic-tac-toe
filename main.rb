@@ -33,6 +33,7 @@ end
 class Board 
     @@game_board = [[1, 2, 3],[4, 5, 6],[7, 8, 9]]
     @@ROW_SEP = '-+-+-'
+    @@winner_marker = nil
 
     def initialize()
     end
@@ -48,6 +49,26 @@ class Board
     def self.place_marker(space, player_marker)
         @@game_board[@@game_board.find_index {|i| i.include?(space)}][@@game_board.find_index {|i| i.include?(space)}] = player_marker
     end
+
+    def self.match?()
+        case
+        when @@game_board.transpose.any? {|col| col.uniq.length == 1}
+            @@winner_marker = @@game_board.transpose[(@@game_board.transpose.find {|col| col.uniq.length == 1})]
+            return true
+        when @@game_board.any? {|row| row.uniq.length == 1}
+            @@winner_marker = @@game_board[@@game_board.find {|row| row.uniq.length == 1}]
+            return true
+        when @@game_board[0][0] == @@game_board[1][1] && @@game_board[1][1] == @@game_board[2][2]
+            @@winner_marker = @@game_board[1][1]
+            return true
+        when @@game_board[0][2] == @@game_board[1][1] && @@game_board[1][1] == @@game_board[2][0]
+            @@winner_marker = @@game_board[1][1]
+            return true
+        else 
+            return false
+        end
+    end
+
 end
 
 # @@game_board[:r1][]
@@ -63,4 +84,4 @@ player_2 = Player.new("player_2", "o", 2)
 # player_2.customization()
 
 Board.place_marker(5, player_1.marker)
-Board.show_board()
+p Board.match?()
