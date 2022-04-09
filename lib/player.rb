@@ -1,5 +1,6 @@
-# Frozen_String_Literal = false
+# Frozen_String_Literal: false
 
+# This class is holds the methods related to player information
 class Player
   attr_accessor :name, :marker
   attr_reader :player_num
@@ -11,19 +12,35 @@ class Player
   end
 
   def customization
+    choose_name
+    choose_marker
+  end
+
+  def choose_name
     name = gets.chomp
-    while name == "" || name == " "
+    sel_valid_name(name)
+    puts "Hello #{name}, you are player ##{player_num}!"
+  end
+
+  def sel_valid_name(name)
+    while ['', ' '].include?(name)
       puts 'Please enter what you would like your name to be.'
       name = gets.chomp
     end
-    puts "Hello #{name}, you are player ##{player_num}!"
+  end
+
+  def choose_marker
     puts "So #{name}, what 1 letter or character do you want your game marker to be?"
     marker = gets.chomp
-    while marker == "" || marker == " " || marker.length > 1 || /\d/.match(marker)
-      puts 'Your marker have to be one character long and not include a number.'
-      self.marker = gets.chomp
-    end
+    sel_valid_marker(marker)
     puts "Okay #{name}, your marker is #{marker}."
+  end
+
+  def sel_valid_marker(marker)
+    while ['', ' '].include?(marker) || marker.length > 1 || /\d/.match(marker)
+      puts 'Your marker have to be one character long and not include a number.'
+      marker = gets.chomp
+    end
   end
 
   def info
