@@ -1,48 +1,64 @@
-# Frozen_String_Literal = false
+# Frozen_String_Literal: false
 
+# This class is holds the methods for the main gameplay
 class Gameplay
   def self.player_play(player_obj)
     Board.show_board
     puts "#{player_obj.name}, enter a number (1-9) that is not already taken by a player marker."
     space_sel = gets.chomp
-    until space_sel.to_i < 10 && space_sel.to_i.positive?
+    space_sel = sel_valid_num(space_sel)
+    sel_valid_space(space_sel, player_obj)
+  end
+
+  def sel_valid_num(selected_num)
+    until selected_num.to_i < 10 && selected_num.to_i.positive?
       puts 'Please enter a number (1-9).'
-      space_sel = gets.chomp
-    end
-    until Board.place_marker(space_sel, player_obj.marker)
-      puts 'Please enter a number (1-9) that is not already taken.'
-      space_sel = gets.chomp
+      selected_num = gets.chomp
     end
   end
 
-  def self.gameplay
-    puts "Welcome to Tik-Tac-Toe! What's is your name?"
-    puts $player_1.name + ", what's is your name?"
-    $player_1.customization
-    puts ""
-    puts $player_2.name + ", what's is your name?"
-    $player_2.customization
-    puts ""
-    loop do
-      puts ""
-      player_play($player_1)
-      if Board.match?
-        break
-      end
-      puts ""
-      player_play($player_2)
-      if Board.match?
-        break
-      end
+  def sel_valid_space(selected_space, player_obj)
+    until Board.place_marker(selected_space, player_obj.marker)
+      puts 'Please enter a number (1-9) that is not already taken.'
+      selected_space = gets.chomp
     end
-    puts ""
+  end
+
+  def self.gameplay(player1, player2)
+    puts 'Welcome to Tik-Tac-Toe!'
+    player_customization(player1, player2)
+    player_turn_loop(player1, player2)
+    share_winner(player1, player2)
+  end
+
+  def player_customization(player1, player2)
+    puts "#{player1.name}, what's is your name?"
+    player1.customization
+    puts "\n#{player2.name}, what's is your name?"
+    player2.customization
+    puts ''
+  end
+
+  def player_turn_loop(player1, player2)
+    loop do
+      puts ''
+      player_play(player1)
+      break if Board.match?
+
+      puts ''
+      player_play(player2)
+      break if Board.match?
+    end
+  end
+
+  def share_winner(player1, player2)
     Board.show_board
-    if Board.winner_marker == $player_1.marker
-      puts "#{$player_1.name} is the winner!"
-    elsif Board.winner_marker == $player_2.marker
-      puts "#{$player_1.name} is the winner!"
+    if Board.winner_marker == player1.marker
+      puts "#{player1.name} is the winner!"
+    elsif Board.winner_marker == player2.marker
+      puts "#{player2.name} is the winner!"
     else
       puts 'Tied Game!'
     end
-  end   
+  end
 end
