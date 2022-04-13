@@ -6,4 +6,4 @@ require_relative 'board'
 
 game = Gameplay.new
 
-game.play
+# game.play

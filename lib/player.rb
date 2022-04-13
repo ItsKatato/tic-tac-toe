@@ -2,8 +2,7 @@
 
 # This class is holds the methods related to player information
 class Player
-  attr_accessor :name, :marker
-  attr_reader :player_num
+  attr_accessor :name, :marker, :player_num
 
   def initialize(name, marker, player_num)
     @name = name

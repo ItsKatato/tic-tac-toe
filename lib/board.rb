@@ -36,11 +36,11 @@ class Board
     end
   end
 
-  def match?
+  def gameover?
     return column_winner if column_match?
     return row_winner if row_match?
     return diagonal_winner if diagonals_match?
-    return true if @game_board.all? { |row| row.none?(/\d/) }
+    return true if board_full?
 
     false
   end
@@ -79,5 +79,9 @@ class Board
   def diagonal_winner
     @winner_marker = @game_board[1][1]
     true
+  end
+
+  def board_full?
+    @game_board.all? { |row| row.none?(/\d/) }
   end
 end

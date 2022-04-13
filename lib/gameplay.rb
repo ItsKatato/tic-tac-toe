@@ -10,14 +10,60 @@ class Gameplay
 
   def initialize
     @board = Board.new
-    @player1 = Player.new('player_1', 'x', 1)
-    @player2 = Player.new('player_2', 'o', 2)
+    @player1 = nil
+    @player2 = nil
+  end
+
+  def play
+    puts 'Welcome to Tik-Tac-Toe!'
+    customize_players
+    player_turn_loop
+    share_winner
+  end
+
+  def player_customization(number, invalid_marker = nil)
+    puts "Hello Player ##{number}, what's is your name?"
+    name = $stdin.gets.chomp
+    marker = choose_marker(invalid_marker, number)
+    Player.new(name, marker, number)
+  end
+
+  def choose_marker(taken_marker, number)
+    puts "So player ##{number}, what 1 letter or character do you want your game marker to be?"
+    marker = $stdin.gets.chomp
+    return marker if marker.match?(/\D/) && marker.length == 1 && marker != taken_marker
+
+    puts "Sorry, you can't make that your marker. Try again."
+    choose_marker(taken_marker, number)
+  end
+
+  def customize_players
+    @player1 = player_customization('1')
+    @player2 = player_customization('2', @player1.marker)
+  end
+
+  def player_turn_loop
+    loop do
+      player_play(@player1)
+      break if @board.gameover?
+
+      player_play(@player2)
+      break if @board.gameover?
+    end
+  end
+
+  def player_play(player_obj)
+    @board.show_board
+    puts "#{player_obj.name}, enter a number (1-9) that is not already taken by a player marker."
+    space_sel = $stdin.gets.chomp
+    space_sel = sel_valid_num(space_sel)
+    sel_valid_space(space_sel, player_obj)
   end
 
   def sel_valid_num(selected_num)
     until selected_num.to_i < 10 && selected_num.to_i.positive?
       puts 'Please enter a number (1-9).'
-      selected_num = gets.chomp
+      selected_num = $stdin.gets.chomp
     end
     selected_num
   end
@@ -25,44 +71,9 @@ class Gameplay
   def sel_valid_space(selected_space, player_obj)
     while @board.space_taken?(selected_space)
       puts 'Please enter a number (1-9) that is not already taken.'
-      selected_space = gets.chomp
+      selected_space = $stdin.gets.chomp
     end
     @board.place_marker(selected_space, player_obj.marker)
-  end
-
-  def play
-    puts 'Welcome to Tik-Tac-Toe!'
-    player_customization
-    player_turn_loop
-    share_winner
-  end
-
-  def player_customization
-    puts "#{@player1.name}, what's is your name?"
-    @player1.customization
-    puts "\n#{@player2.name}, what's is your name?"
-    @player2.customization
-    puts ''
-  end
-
-  def player_turn_loop
-    loop do
-      puts ''
-      player_play(@player1)
-      break if @board.match?
-
-      puts ''
-      player_play(@player2)
-      break if @board.match?
-    end
-  end
-
-  def player_play(player_obj)
-    @board.show_board
-    puts "#{player_obj.name}, enter a number (1-9) that is not already taken by a player marker."
-    space_sel = gets.chomp
-    space_sel = sel_valid_num(space_sel)
-    sel_valid_space(space_sel, player_obj)
   end
 
   def share_winner
